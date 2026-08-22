@@ -1,0 +1,15 @@
+[Unit]
+Description=Responder Agent - autonomous self-monitoring security agent
+After=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/responder-agent/agent.env
+ExecStart=/opt/responder-agent/venv/bin/python3 /opt/responder-agent/agent_service.py
+WorkingDirectory=/opt/responder-agent
+Restart=on-failure
+RestartSec=5
+User=yassine
+
+[Install]
+WantedBy=multi-user.target

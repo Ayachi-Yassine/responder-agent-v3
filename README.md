@@ -172,18 +172,7 @@ Use only systems and accounts you own in an isolated lab.
 
 Do not assume a detector event proves malicious activity. A new listener or process may be legitimate; the model's output should be reviewed as a hypothesis.
 
-## Important security limitations
 
-These are material limitations of the current code, not merely general deployment advice:
-
-1. **The `/execute` endpoint bypasses the AI and dry-run gate.** It directly dispatches the requested action after API-key authentication. In particular, a caller with the API key can request `run_command` even when `DRY_RUN=true`. Do not expose this endpoint to untrusted networks. A safer next step is to remove or disable it by default, restrict it to a strict action allowlist, and require an independent authorization policy.
-2. **`run_command` executes shell input.** The model-proposed command is passed to `/bin/sh -c`. This is high risk and should be replaced with narrowly defined, parameterized actions. Do not use this capability on production hosts.
-3. **The API key is the primary API access control.** Use a long random secret, TLS or a trusted private network, key rotation, and network-level restrictions. The example service binds to `0.0.0.0`.
-4. **Dry-run is not a global execution safety switch.** It gates the normal `reason_and_act` path, but not the direct `/execute` endpoint. Keep the service isolated even while dry-run is enabled.
-5. **Detector state is in memory.** Listener/process snapshots, SSH failure counts, and the set of already-triggered IPs are lost when the service restarts.
-6. **Detection heuristics need validation.** Process/listener changes are not inherently malicious. Journal parsing and service-unit names vary across Linux distributions.
-7. **Action verification is incomplete.** IP blocking checks the iptables rule; the current unblocking and command paths do not provide equivalent independent verification.
-8. **No automated test suite is currently included in this repository.** Add unit tests with mocked subprocess, journal, HTTP, and LLM boundaries before expanding deployment.
 
 ## Roadmap
 
